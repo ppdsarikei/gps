@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Ujian GPS 5 Meter</title>
+<style>
+  :root{
+    --blue:#1976d2; --green:#16a34a; --orange:#f59e0b; --red:#dc2626;
+    --bg:#f4f7fb; --card:#fff; --text:#17324d; --muted:#64748b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    color:var(--text);min-height:100vh;
+  }
+  .wrap{max-width:680px;margin:auto;padding:18px 14px 32px}
+  .hero{
+    background:linear-gradient(135deg,#0d6efd,#36a3ff);color:white;border-radius:22px;
+    padding:22px 20px;box-shadow:0 10px 28px rgba(25,118,210,.18)
+  }
+  h1{font-size:25px;margin:0 0 7px}
+  .subtitle{font-size:14px;opacity:.92;line-height:1.45}
+  .card{
+    background:var(--card);border-radius:18px;margin-top:14px;padding:17px;
+    box-shadow:0 5px 18px rgba(15,23,42,.07)
+  }
+  .distanceBox{text-align:center;padding:10px 0 18px}
+  .distance{
+    font-size:58px;font-weight:800;letter-spacing:-2px;line-height:1;
+    color:var(--blue)
+  }
+  .unit{font-size:17px;color:var(--muted);margin-top:4px}
+  .target{font-size:14px;color:var(--muted);margin-top:8px}
+  .progress{height:13px;background:#e8eef6;border-radius:99px;overflow:hidden;margin:14px 0 4px}
+  .bar{height:100%;width:0;background:var(--blue);transition:.25s}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{background:#f7f9fc;border-radius:13px;padding:12px}
+  .label{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .value{font-size:16px;font-weight:700;word-break:break-word}
+  button{
+    width:100%;border:0;border-radius:13px;padding:14px 16px;font-size:16px;font-weight:700;
+    cursor:pointer;margin-top:10px
+  }
+  .primary{background:var(--blue);color:white}
+  .stop{background:#eef2f7;color:#334155}
+  .success{background:#dcfce7;color:#166534}
+  .status{
+    margin-top:13px;padding:12px 14px;border-radius:12px;background:#eff6ff;
+    color:#1e40af;font-size:14px;line-height:1.45
+  }
+  .warning{background:#fff7ed;color:#9a3412}
+  .good{background:#ecfdf5;color:#166534}
+  .error{background:#fef2f2;color:#991b1b}
+  .small{font-size:12px;color:var(--muted);line-height:1.5}
+  .coords{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  .pulse{
+    display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;
+    margin-right:7px;box-shadow:0 0 0 5px rgba(34,197,94,.12)
+  }
+  .pulse.off{background:#94a3b8;box-shadow:none}
+  @media(max-width:420px){.distance{font-size:50px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>📍 Ujian GPS 5 Meter</h1>
+    <div class="subtitle">
+      Uji sama ada Safari atau Chrome pada iPhone boleh mengesan pergerakan
+      anda daripada titik permulaan dalam jarak 5 meter.
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="distanceBox">
+      <div class="distance" id="distance">—</div>
+      <div class="unit">meter dari titik permulaan</div>
+      <div class="target">Sasaran: bergerak sekurang-kurangnya <b>5 meter</b></div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </div>
+
+    <button class="primary" id="startBtn" onclick="startGPS()">📍 Mula & Simpan Lokasi</button>
+    <button class="stop" id="stopBtn" onclick="stopGPS()" disabled>⏹ Hentikan GPS</button>
+
+    <div class="status" id="status">
+      Tekan <b>“Mula & Simpan Lokasi”</b>, benarkan akses lokasi, kemudian berjalan perlahan.
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="grid">
+      <div class="stat">
+        <div class="label">Ketepatan GPS</div>
+        <div class="value" id="accuracy">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Kelajuan</div>
+        <div class="value" id="speed">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Latitude</div>
+        <div class="value coords" id="lat">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Longitude</div>
+        <div class="value coords" id="lon">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <b>💡 Cara menguji</b>
+    <ol class="small">
+      <li>Buka fail ini melalui <b>HTTPS</b> pada iPhone.</li>
+      <li>Tekan <b>Mula & Simpan Lokasi</b>.</li>
+      <li>Benarkan Safari/Chrome menggunakan lokasi.</li>
+      <li>Tunggu ketepatan GPS stabil, sebaiknya sekitar <b>5–10 m atau lebih baik</b>.</li>
+      <li>Berjalan kira-kira 5–10 meter dari tempat asal.</li>
+      <li>Perhatikan bacaan jarak secara langsung.</li>
+    </ol>
+    <div class="small">
+      Nota: GPS telefon tidak semestinya tepat hingga 5 meter. Bacaan <b>accuracy</b>
+      menunjukkan anggaran ketidakpastian lokasi semasa.
+    </div>
+  </section>
+</div>
+
+<script>
+let watchId = null;
+let startPosition = null;
+let bestAccuracy = Infinity;
+
+const $ = id => document.getElementById(id);
+
+function setStatus(message, type="") {
+  const el = $("status");
+  el.className = "status" + (type ? " " + type : "");
+  el.innerHTML = message;
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2-lat1);
+  const dLon = toRad(lon2-lon1);
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+function startGPS() {
+  if (!("geolocation" in navigator)) {
+    setStatus("❌ Pelayar ini tidak menyokong Geolocation API.", "error");
+    return;
+  }
+
+  if (location.protocol !== "https:" && location.hostname !== "localhost") {
+    setStatus(
+      "⚠️ Untuk iPhone Safari/Chrome, Geolocation biasanya memerlukan laman <b>HTTPS</b>.<br>" +
+      "Muat naik HTML ini ke GitHub Pages atau hosting HTTPS.",
+      "warning"
+    );
+  }
+
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+
+  startPosition = null;
+  bestAccuracy = Infinity;
+  $("distance").textContent = "0.00";
+  $("bar").style.width = "0%";
+  $("startBtn").disabled = true;
+  $("stopBtn").disabled = false;
+
+  setStatus("🛰️ Sedang mendapatkan lokasi GPS… Sila tunggu sehingga ketepatan stabil.");
+
+  watchId = navigator.geolocation.watchPosition(
+    handlePosition,
+    handleError,
+    {
+      enableHighAccuracy: true,
+      maximumAge: 1000,
+      timeout: 15000
+    }
+  );
+}
+
+function handlePosition(position) {
+  const c = position.coords;
+  const accuracy = Number(c.accuracy);
+
+  $("accuracy").textContent = Number.isFinite(accuracy) ? accuracy.toFixed(1) + " m" : "—";
+  $("lat").textContent = Number(c.latitude).toFixed(6);
+  $("lon").textContent = Number(c.longitude).toFixed(6);
+
+  if (c.speed != null && c.speed >= 0) {
+    $("speed").textContent = (c.speed * 3.6).toFixed(1) + " km/j";
+  } else {
+    $("speed").textContent = "—";
+  }
+
+  if (accuracy < bestAccuracy) bestAccuracy = accuracy;
+
+  if (!startPosition) {
+    startPosition = {
+      latitude: c.latitude,
+      longitude: c.longitude
+    };
+    setStatus(
+      "✅ Titik permulaan telah disimpan.<br>" +
+      "Ketepatan awal: <b>" + accuracy.toFixed(1) + " m</b>. Sekarang mula bergerak."
+    );
+    return;
+  }
+
+  const d = haversine(
+    startPosition.latitude,
+    startPosition.longitude,
+    c.latitude,
+    c.longitude
+  );
+
+  $("distance").textContent = d.toFixed(2);
+  $("bar").style.width = Math.min(100, (d / 5) * 100) + "%";
+
+  if (d >= 5) {
+    $("bar").style.background = "var(--green)";
+    setStatus(
+      "🎉 <b>5 METER DICAPAI!</b><br>" +
+      "Jarak daripada titik permulaan: <b>" + d.toFixed(2) + " m</b>",
+      "good"
+    );
+  } else {
+    $("bar").style.background = "var(--blue)";
+    setStatus(
+      "📍 GPS aktif. Anda telah bergerak <b>" + d.toFixed(2) +
+      " m</b> daripada titik permulaan.<br>" +
+      "Baki anggaran: <b>" + Math.max(0, 5-d).toFixed(2) + " m</b>."
+    );
+  }
+}
+
+function handleError(error) {
+  let message = "❌ Gagal mendapatkan lokasi GPS.";
+  if (error.code === 1) {
+    message = "❌ Akses lokasi ditolak. Sila benarkan Location untuk Safari/Chrome dalam tetapan iPhone.";
+  } else if (error.code === 2) {
+    message = "❌ Lokasi tidak dapat ditentukan. Cuba bergerak ke kawasan yang lebih terbuka.";
+  } else if (error.code === 3) {
+    message = "⏱️ GPS mengambil masa terlalu lama. Cuba lagi.";
+  }
+  setStatus(message, "error");
+}
+
+function stopGPS() {
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+  $("startBtn").disabled = false;
+  $("stopBtn").disabled = true;
+  setStatus("⏹ GPS dihentikan. Tekan butang mula untuk membuat ujian baharu.");
+}
+</script>
+</body>
+</html>
