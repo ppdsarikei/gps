@@ -4,264 +4,342 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Ujian GPS 5 Meter</title>
+<title>Jejak Kata GPS</title>
 <style>
-  :root{
-    --blue:#1976d2; --green:#16a34a; --orange:#f59e0b; --red:#dc2626;
-    --bg:#f4f7fb; --card:#fff; --text:#17324d; --muted:#64748b;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-    color:var(--text);min-height:100vh;
-  }
-  .wrap{max-width:680px;margin:auto;padding:18px 14px 32px}
-  .hero{
-    background:linear-gradient(135deg,#0d6efd,#36a3ff);color:white;border-radius:22px;
-    padding:22px 20px;box-shadow:0 10px 28px rgba(25,118,210,.18)
-  }
-  h1{font-size:25px;margin:0 0 7px}
-  .subtitle{font-size:14px;opacity:.92;line-height:1.45}
-  .card{
-    background:var(--card);border-radius:18px;margin-top:14px;padding:17px;
-    box-shadow:0 5px 18px rgba(15,23,42,.07)
-  }
-  .distanceBox{text-align:center;padding:10px 0 18px}
-  .distance{
-    font-size:58px;font-weight:800;letter-spacing:-2px;line-height:1;
-    color:var(--blue)
-  }
-  .unit{font-size:17px;color:var(--muted);margin-top:4px}
-  .target{font-size:14px;color:var(--muted);margin-top:8px}
-  .progress{height:13px;background:#e8eef6;border-radius:99px;overflow:hidden;margin:14px 0 4px}
-  .bar{height:100%;width:0;background:var(--blue);transition:.25s}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .stat{background:#f7f9fc;border-radius:13px;padding:12px}
-  .label{font-size:12px;color:var(--muted);margin-bottom:4px}
-  .value{font-size:16px;font-weight:700;word-break:break-word}
-  button{
-    width:100%;border:0;border-radius:13px;padding:14px 16px;font-size:16px;font-weight:700;
-    cursor:pointer;margin-top:10px
-  }
-  .primary{background:var(--blue);color:white}
-  .stop{background:#eef2f7;color:#334155}
-  .success{background:#dcfce7;color:#166534}
-  .status{
-    margin-top:13px;padding:12px 14px;border-radius:12px;background:#eff6ff;
-    color:#1e40af;font-size:14px;line-height:1.45
-  }
-  .warning{background:#fff7ed;color:#9a3412}
-  .good{background:#ecfdf5;color:#166534}
-  .error{background:#fef2f2;color:#991b1b}
-  .small{font-size:12px;color:var(--muted);line-height:1.5}
-  .coords{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
-  .pulse{
-    display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;
-    margin-right:7px;box-shadow:0 0 0 5px rgba(34,197,94,.12)
-  }
-  .pulse.off{background:#94a3b8;box-shadow:none}
-  @media(max-width:420px){.distance{font-size:50px}}
+:root{
+  --blue:#1769d2;--blue2:#0b4fa8;--green:#16a34a;--gold:#f59e0b;
+  --bg:#eef4fb;--card:#fff;--text:#17324d;--muted:#64748b;--line:#dbe5f0;
+  --red:#dc2626;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.app{max-width:720px;margin:auto;padding:14px 12px 28px}
+header{background:linear-gradient(135deg,var(--blue2),#2196f3);color:white;border-radius:22px;padding:19px 18px;box-shadow:0 8px 24px rgba(23,105,210,.18)}
+h1{font-size:26px;margin:0 0 5px}.sub{font-size:13px;opacity:.92}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-top:12px;padding:15px}
+.top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.stat{background:#f6f9fd;border-radius:13px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}
+.radarWrap{display:flex;justify-content:center;align-items:center;padding:5px 0 2px}
+.radar{width:min(82vw,420px);height:min(82vw,420px);position:relative;border-radius:50%;
+ background:radial-gradient(circle at center,#f8fbff 0 20%,#eef6ff 20.5% 21%,#f8fbff 21.5% 40%,#eef6ff 40.5% 41%,#f8fbff 41.5% 60%,#eef6ff 60.5% 61%,#f8fbff 61.5%);
+ border:2px solid #a9c5e5;overflow:hidden}
+.radar:before,.radar:after{content:"";position:absolute;background:#b9cde3}
+.radar:before{width:1px;left:50%;top:0;bottom:0}.radar:after{height:1px;top:50%;left:0;right:0}
+.n,.e,.s,.w{position:absolute;font-size:12px;font-weight:800;color:#64809e;z-index:2}.n{top:9px;left:50%;transform:translateX(-50%)}.e{right:10px;top:50%;transform:translateY(-50%)}.s{bottom:9px;left:50%;transform:translateX(-50%)}.w{left:10px;top:50%;transform:translateY(-50%)}
+.userDot{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--blue);border:4px solid white;box-shadow:0 0 0 6px rgba(23,105,210,.15);left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}
+.target{position:absolute;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+ background:white;border:4px solid var(--red);color:var(--red);font-size:24px;font-weight:900;box-shadow:0 5px 16px rgba(15,23,42,.18);z-index:4;transform:translate(-50%,-50%);transition:left .3s,top .3s}
+.target.pulse{animation:pulse 1.2s infinite}.target.done{background:#dcfce7;border-color:var(--green);color:#166534;animation:none}
+@keyframes pulse{50%{box-shadow:0 0 0 12px rgba(220,38,38,.10),0 5px 16px rgba(15,23,42,.18)}}
+.centerLabel{position:absolute;left:50%;top:50%;transform:translate(-50%,22px);font-size:10px;font-weight:700;color:#24517d;z-index:6}
+.instructions{font-size:13px;color:var(--muted);text-align:center;line-height:1.45;margin:4px 0 10px}
+button{width:100%;min-height:48px;border:0;border-radius:13px;font-size:16px;font-weight:800;margin-top:9px;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#e9f0f8;color:#24415e}.danger{background:#fee2e2;color:#991b1b}
+button:disabled{opacity:.5;cursor:not-allowed}
+.status{padding:12px 13px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:13px;line-height:1.45;margin-top:10px}
+.good{background:#ecfdf5;color:#166534}.warn{background:#fff7ed;color:#9a3412}.error{background:#fef2f2;color:#991b1b}
+.word{display:flex;justify-content:center;gap:7px;margin:5px 0 10px}
+.letter{width:42px;height:42px;border-radius:11px;background:#eef3f8;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;color:#6b7f95}
+.letter.active{background:#dbeafe;color:#1557a6;outline:2px solid #7db2ef}.letter.done{background:#dcfce7;color:#166534}
+.highscore{font-size:13px;line-height:1.6}.scoreLine{display:flex;justify-content:space-between;border-bottom:1px solid #edf1f5;padding:6px 0}
+.nameRow{display:flex;gap:8px}.nameRow input{flex:1;min-width:0;border:1px solid #cbd5e1;border-radius:12px;padding:12px;font-size:16px}
+.small{font-size:11px;color:var(--muted);line-height:1.5}
+@media(max-width:420px){h1{font-size:23px}.top{grid-template-columns:repeat(3,1fr)}.stat b{font-size:17px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <section class="hero">
-    <h1>📍 Ujian GPS 5 Meter</h1>
-    <div class="subtitle">
-      Uji sama ada Safari atau Chrome pada iPhone boleh mengesan pergerakan
-      anda daripada titik permulaan dalam jarak 5 meter.
-    </div>
-  </section>
+<div class="app">
+<header>
+  <h1>🧭 Jejak Kata GPS</h1>
+  <div class="sub">Cari huruf menggunakan GPS. Jejak semua huruf untuk membentuk satu perkataan.</div>
+</header>
 
-  <section class="card">
-    <div class="distanceBox">
-      <div class="distance" id="distance">—</div>
-      <div class="unit">meter dari titik permulaan</div>
-      <div class="target">Sasaran: bergerak sekurang-kurangnya <b>5 meter</b></div>
-      <div class="progress"><div class="bar" id="bar"></div></div>
-    </div>
+<section class="card">
+  <div class="top">
+    <div class="stat"><b id="time">00:00.0</b><span>MASA</span></div>
+    <div class="stat"><b id="step">0/4</b><span>HURUF</span></div>
+    <div class="stat"><b id="acc">—</b><span>KETEPATAN GPS</span></div>
+  </div>
 
-    <button class="primary" id="startBtn" onclick="startGPS()">📍 Mula & Simpan Lokasi</button>
-    <button class="stop" id="stopBtn" onclick="stopGPS()" disabled>⏹ Hentikan GPS</button>
+  <div class="word" id="wordPreview" aria-label="Kemajuan huruf">
+    <span class="letter active">?</span><span class="letter">?</span><span class="letter">?</span><span class="letter">?</span>
+  </div>
 
-    <div class="status" id="status">
-      Tekan <b>“Mula & Simpan Lokasi”</b>, benarkan akses lokasi, kemudian berjalan perlahan.
+  <div class="radarWrap">
+    <div class="radar" id="radar" aria-label="Radar GPS">
+      <span class="n">N</span><span class="e">E</span><span class="s">S</span><span class="w">W</span>
+      <div class="userDot"></div>
+      <div class="centerLabel">ANDA</div>
+      <div class="target pulse" id="target" style="left:50%;top:16%">?</div>
     </div>
-  </section>
+  </div>
 
-  <section class="card">
-    <div class="grid">
-      <div class="stat">
-        <div class="label">Ketepatan GPS</div>
-        <div class="value" id="accuracy">—</div>
-      </div>
-      <div class="stat">
-        <div class="label">Kelajuan</div>
-        <div class="value" id="speed">—</div>
-      </div>
-      <div class="stat">
-        <div class="label">Latitude</div>
-        <div class="value coords" id="lat">—</div>
-      </div>
-      <div class="stat">
-        <div class="label">Longitude</div>
-        <div class="value coords" id="lon">—</div>
-      </div>
-    </div>
-  </section>
+  <p class="instructions" id="instruction">Tekan mula untuk mendapatkan lokasi permulaan.</p>
+  <button class="primary" id="startBtn" type="button">▶ Mula Permainan</button>
+  <button class="secondary" id="newBtn" type="button" disabled>↻ Permainan Baharu</button>
+  <button class="danger" id="stopBtn" type="button" disabled>⏹ Hentikan GPS</button>
+  <div class="status" id="status">GPS belum dimulakan.</div>
+</section>
 
-  <section class="card">
-    <b>💡 Cara menguji</b>
-    <ol class="small">
-      <li>Buka fail ini melalui <b>HTTPS</b> pada iPhone.</li>
-      <li>Tekan <b>Mula & Simpan Lokasi</b>.</li>
-      <li>Benarkan Safari/Chrome menggunakan lokasi.</li>
-      <li>Tunggu ketepatan GPS stabil, sebaiknya sekitar <b>5–10 m atau lebih baik</b>.</li>
-      <li>Berjalan kira-kira 5–10 meter dari tempat asal.</li>
-      <li>Perhatikan bacaan jarak secara langsung.</li>
-    </ol>
-    <div class="small">
-      Nota: GPS telefon tidak semestinya tepat hingga 5 meter. Bacaan <b>accuracy</b>
-      menunjukkan anggaran ketidakpastian lokasi semasa.
-    </div>
-  </section>
+<section class="card">
+  <b>🏆 Rekod Terpantas</b>
+  <div id="scores" class="highscore"><div class="small">Belum ada rekod pada peranti ini.</div></div>
+  <div id="nameArea" style="display:none;margin-top:10px">
+    <div class="small" style="margin-bottom:6px">Tahniah! Masukkan nama untuk rekod baharu.</div>
+    <form class="nameRow" id="nameForm">
+      <input id="playerName" maxlength="20" placeholder="Nama pemain" autocomplete="name">
+      <button class="primary" type="submit" style="width:auto;margin:0;padding:0 18px">Simpan</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <b>📱 Cara bermain</b>
+  <ol class="small">
+    <li>Buka permainan melalui <b>HTTPS</b> menggunakan Safari atau Chrome pada iPhone.</li>
+    <li>Tekan <b>Mula Permainan</b> dan benarkan akses lokasi.</li>
+    <li>Radar menunjukkan arah huruf sasaran. Bergerak menuju huruf tersebut.</li>
+    <li>Apabila berada dalam radius <b>5 meter</b>, huruf akan dikunci dan huruf seterusnya muncul.</li>
+    <li>Jejak semua 4 huruf. Masa terpantas menjadi skor.</li>
+  </ol>
+  <div class="small">Nota: GPS telefon mempunyai ketidakpastian. Untuk permainan sebenar, gunakan kawasan terbuka dan tetapkan radius checkpoint mengikut ketepatan peranti.</div>
+</section>
 </div>
 
 <script>
-let watchId = null;
-let startPosition = null;
-let bestAccuracy = Infinity;
+(() => {
+  "use strict";
 
-const $ = id => document.getElementById(id);
+  const WORDS = ["BUKU","KATA","BOLA","MATA","SAPI","GURU"];
+  const RADIUS_METERS = 5;
+  const TARGET_DISTANCE_METERS = 10;
+  const STORAGE_KEY = "jejakKataGPS_scores_v1";
 
-function setStatus(message, type="") {
-  const el = $("status");
-  el.className = "status" + (type ? " " + type : "");
-  el.innerHTML = message;
-}
+  const $ = id => document.getElementById(id);
+  const startBtn=$("startBtn"), newBtn=$("newBtn"), stopBtn=$("stopBtn");
+  const targetEl=$("target"), radar=$("radar"), statusEl=$("status");
+  const timeEl=$("time"), stepEl=$("step"), accEl=$("acc");
+  const instruction=$("instruction"), wordPreview=$("wordPreview");
+  const scoresEl=$("scores"), nameArea=$("nameArea"), nameForm=$("nameForm"), playerName=$("playerName");
 
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371000;
-  const toRad = x => x * Math.PI / 180;
-  const dLat = toRad(lat2-lat1);
-  const dLon = toRad(lon2-lon1);
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-  return 2 * R * Math.asin(Math.sqrt(a));
-}
+  let watchId=null, startPos=null, gameWord="", index=0, startTime=0, timerId=null;
+  let targets=[], lastPosition=null, completedTime=null;
 
-function startGPS() {
-  if (!("geolocation" in navigator)) {
-    setStatus("❌ Pelayar ini tidak menyokong Geolocation API.", "error");
-    return;
+  function setStatus(html, cls=""){
+    statusEl.className="status"+(cls?" "+cls:"");
+    statusEl.innerHTML=html;
   }
 
-  if (location.protocol !== "https:" && location.hostname !== "localhost") {
-    setStatus(
-      "⚠️ Untuk iPhone Safari/Chrome, Geolocation biasanya memerlukan laman <b>HTTPS</b>.<br>" +
-      "Muat naik HTML ini ke GitHub Pages atau hosting HTTPS.",
-      "warning"
-    );
+  function haversine(a,b){
+    const R=6371000, rad=x=>x*Math.PI/180;
+    const dLat=rad(b.latitude-a.latitude), dLon=rad(b.longitude-a.longitude);
+    const x=Math.sin(dLat/2)**2 + Math.cos(rad(a.latitude))*Math.cos(rad(b.latitude))*Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(x));
   }
 
-  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  function destinationPoint(origin,bearingDeg,distance){
+    const R=6371000, br=bearingDeg*Math.PI/180, lat1=origin.latitude*Math.PI/180, lon1=origin.longitude*Math.PI/180;
+    const d=distance/R;
+    const lat2=Math.asin(Math.sin(lat1)*Math.cos(d)+Math.cos(lat1)*Math.sin(d)*Math.cos(br));
+    const lon2=lon1+Math.atan2(Math.sin(br)*Math.sin(d)*Math.cos(lat1),Math.cos(d)-Math.sin(lat1)*Math.sin(lat2));
+    return {latitude:lat2*180/Math.PI, longitude:lon2*180/Math.PI};
+  }
 
-  startPosition = null;
-  bestAccuracy = Infinity;
-  $("distance").textContent = "0.00";
-  $("bar").style.width = "0%";
-  $("startBtn").disabled = true;
-  $("stopBtn").disabled = false;
+  function bearing(a,b){
+    const rad=x=>x*Math.PI/180, deg=x=>(x*180/Math.PI+360)%360;
+    const y=Math.sin(rad(b.longitude-a.longitude))*Math.cos(rad(b.latitude));
+    const x=Math.cos(rad(a.latitude))*Math.sin(rad(b.latitude))-Math.sin(rad(a.latitude))*Math.cos(rad(b.latitude))*Math.cos(rad(b.longitude-a.longitude));
+    return deg(Math.atan2(y,x));
+  }
 
-  setStatus("🛰️ Sedang mendapatkan lokasi GPS… Sila tunggu sehingga ketepatan stabil.");
+  function formatTime(ms){
+    const sec=Math.max(0,ms)/1000;
+    return sec.toFixed(1).padStart(4,"0");
+  }
 
-  watchId = navigator.geolocation.watchPosition(
-    handlePosition,
-    handleError,
-    {
-      enableHighAccuracy: true,
-      maximumAge: 1000,
-      timeout: 15000
+  function renderWord(){
+    wordPreview.innerHTML="";
+    [...gameWord].forEach((ch,i)=>{
+      const s=document.createElement("span");
+      s.className="letter"+(i<index?" done":i===index?" active":"");
+      s.textContent=i<index?ch:"?";
+      wordPreview.appendChild(s);
+    });
+    stepEl.textContent=index+"/"+gameWord.length;
+  }
+
+  function updateTimer(){
+    if(!startTime) return;
+    timeEl.textContent=formatTime(performance.now()-startTime);
+  }
+
+  function stopWatch(){
+    if(watchId!==null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
+    if(timerId){ clearInterval(timerId); timerId=null; }
+    stopBtn.disabled=true;
+  }
+
+  function startGame(){
+    if(!("geolocation" in navigator)){
+      setStatus("❌ Pelayar ini tidak menyokong GPS Geolocation API.","error"); return;
     }
-  );
-}
-
-function handlePosition(position) {
-  const c = position.coords;
-  const accuracy = Number(c.accuracy);
-
-  $("accuracy").textContent = Number.isFinite(accuracy) ? accuracy.toFixed(1) + " m" : "—";
-  $("lat").textContent = Number(c.latitude).toFixed(6);
-  $("lon").textContent = Number(c.longitude).toFixed(6);
-
-  if (c.speed != null && c.speed >= 0) {
-    $("speed").textContent = (c.speed * 3.6).toFixed(1) + " km/j";
-  } else {
-    $("speed").textContent = "—";
+    if(location.protocol!=="https:" && location.hostname!=="localhost"){
+      setStatus("⚠️ Untuk iPhone Safari/Chrome, Geolocation memerlukan <b>HTTPS</b>. Muat naik fail ini ke GitHub Pages atau hosting HTTPS.","warn");
+    }
+    stopWatch();
+    startPos=null; lastPosition=null; completedTime=null; index=0;
+    gameWord=WORDS[Math.floor(Math.random()*WORDS.length)];
+    targets=[]; renderWord();
+    targetEl.textContent="?"; targetEl.className="target pulse";
+    targetEl.style.left="50%"; targetEl.style.top="16%";
+    timeEl.textContent="00:00.0"; accEl.textContent="—";
+    startBtn.disabled=true; newBtn.disabled=true; stopBtn.disabled=false;
+    nameArea.style.display="none";
+    setStatus("🛰️ Mendapatkan lokasi permulaan… Sila tunggu GPS stabil.");
+    watchId=navigator.geolocation.watchPosition(onPosition,onError,{
+      enableHighAccuracy:true, maximumAge:1000, timeout:15000
+    });
   }
 
-  if (accuracy < bestAccuracy) bestAccuracy = accuracy;
-
-  if (!startPosition) {
-    startPosition = {
-      latitude: c.latitude,
-      longitude: c.longitude
-    };
-    setStatus(
-      "✅ Titik permulaan telah disimpan.<br>" +
-      "Ketepatan awal: <b>" + accuracy.toFixed(1) + " m</b>. Sekarang mula bergerak."
-    );
-    return;
+  function createTargets(origin){
+    // Susunan arah dibuat berbeza supaya pemain benar-benar perlu membaca radar.
+    const bearings=[0,105,205,300];
+    targets=bearings.map((b,i)=>destinationPoint(origin,b,TARGET_DISTANCE_METERS));
   }
 
-  const d = haversine(
-    startPosition.latitude,
-    startPosition.longitude,
-    c.latitude,
-    c.longitude
-  );
+  function onPosition(pos){
+    const c=pos.coords;
+    const current={latitude:c.latitude,longitude:c.longitude};
+    lastPosition=current;
+    accEl.textContent=Number.isFinite(c.accuracy)?c.accuracy.toFixed(1)+" m":"—";
 
-  $("distance").textContent = d.toFixed(2);
-  $("bar").style.width = Math.min(100, (d / 5) * 100) + "%";
+    if(!startPos){
+      startPos=current;
+      createTargets(startPos);
+      startTime=performance.now();
+      timerId=setInterval(updateTimer,100);
+      index=0; renderWord();
+      targetEl.textContent=gameWord[index];
+      instruction.textContent="Cari huruf pertama melalui radar. Bergerak perlahan ke arah sasaran.";
+      setStatus("✅ Lokasi permulaan disimpan. Huruf pertama ialah <b>"+gameWord[index]+"</b>.","good");
+      return;
+    }
 
-  if (d >= 5) {
-    $("bar").style.background = "var(--green)";
-    setStatus(
-      "🎉 <b>5 METER DICAPAI!</b><br>" +
-      "Jarak daripada titik permulaan: <b>" + d.toFixed(2) + " m</b>",
-      "good"
-    );
-  } else {
-    $("bar").style.background = "var(--blue)";
-    setStatus(
-      "📍 GPS aktif. Anda telah bergerak <b>" + d.toFixed(2) +
-      " m</b> daripada titik permulaan.<br>" +
-      "Baki anggaran: <b>" + Math.max(0, 5-d).toFixed(2) + " m</b>."
-    );
+    if(index>=targets.length) return;
+
+    const target=targets[index];
+    const d=haversine(current,target);
+    const b=bearing(current,target);
+    positionTarget(b,d);
+
+    if(d<=RADIUS_METERS){
+      const reached=gameWord[index];
+      index++;
+      renderWord();
+      if(index>=gameWord.length){
+        finishGame();
+      }else{
+        targetEl.textContent=gameWord[index];
+        setStatus("🎯 Huruf <b>"+reached+"</b> berjaya dijejaki! Sekarang cari huruf <b>"+gameWord[index]+"</b>.","good");
+        instruction.textContent="Checkpoint seterusnya telah dibuka.";
+      }
+    }else{
+      const accuracy=c.accuracy;
+      const quality=accuracy<=8?"Baik":accuracy<=15?"Sederhana":"Lemah";
+      instruction.textContent="Arahkan diri ke sasaran. Jarak anggaran "+d.toFixed(1)+" m.";
+      setStatus("📡 GPS aktif · Ketepatan <b>"+(Number.isFinite(accuracy)?accuracy.toFixed(1):"—")+" m</b> · Kualiti: <b>"+quality+"</b>");
+    }
   }
-}
 
-function handleError(error) {
-  let message = "❌ Gagal mendapatkan lokasi GPS.";
-  if (error.code === 1) {
-    message = "❌ Akses lokasi ditolak. Sila benarkan Location untuk Safari/Chrome dalam tetapan iPhone.";
-  } else if (error.code === 2) {
-    message = "❌ Lokasi tidak dapat ditentukan. Cuba bergerak ke kawasan yang lebih terbuka.";
-  } else if (error.code === 3) {
-    message = "⏱️ GPS mengambil masa terlalu lama. Cuba lagi.";
+  function positionTarget(b,d){
+    // Radar hanya memaparkan arah relatif; jarak digunakan untuk skala.
+    const angle=(b-0)*Math.PI/180;
+    const radius=Math.min(43,Math.max(10,d/TARGET_DISTANCE_METERS*36));
+    const x=50+Math.sin(angle)*radius;
+    const y=50-Math.cos(angle)*radius;
+    targetEl.style.left=Math.max(10,Math.min(90,x))+"%";
+    targetEl.style.top=Math.max(10,Math.min(90,y))+"%";
   }
-  setStatus(message, "error");
-}
 
-function stopGPS() {
-  if (watchId !== null) {
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
+  function finishGame(){
+    completedTime=performance.now()-startTime;
+    timeEl.textContent=formatTime(completedTime);
+    index=gameWord.length; renderWord();
+    targetEl.textContent="✓"; targetEl.className="target done";
+    instruction.textContent="Semua huruf berjaya dijejaki!";
+    setStatus("🏆 <b>PERMAINAN SELESAI!</b> Perkataan: <b>"+gameWord+"</b> · Masa: <b>"+formatTime(completedTime)+" saat</b>","good");
+    stopWatch();
+    startBtn.disabled=true; newBtn.disabled=false;
+    if(isHighScore(completedTime)){
+      nameArea.style.display="block";
+      playerName.value="";
+      setTimeout(()=>playerName.focus(),50);
+    }
+    renderScores();
   }
-  $("startBtn").disabled = false;
-  $("stopBtn").disabled = true;
-  setStatus("⏹ GPS dihentikan. Tekan butang mula untuk membuat ujian baharu.");
-}
+
+  function isHighScore(ms){
+    const scores=loadScores();
+    return scores.length<5 || ms<scores[scores.length-1].time;
+  }
+
+  function loadScores(){
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      const data=raw?JSON.parse(raw):[];
+      return Array.isArray(data)?data.filter(x=>x && Number.isFinite(x.time) && typeof x.name==="string").sort((a,b)=>a.time-b.time).slice(0,5):[];
+    }catch(e){return []}
+  }
+
+  function saveScore(name,time,word){
+    const scores=loadScores();
+    scores.push({name:name.trim().slice(0,20)||"Pemain",time,word,date:new Date().toLocaleDateString("ms-MY")});
+    scores.sort((a,b)=>a.time-b.time);
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(scores.slice(0,5)));}catch(e){}
+    renderScores();
+  }
+
+  function renderScores(){
+    const scores=loadScores();
+    if(!scores.length){
+      scoresEl.innerHTML='<div class="small">Belum ada rekod pada peranti ini.</div>'; return;
+    }
+    scoresEl.innerHTML=scores.map((s,i)=>
+      '<div class="scoreLine"><span><b>'+(i+1)+'. '+escapeHTML(s.name)+'</b> · '+escapeHTML(s.word)+'</span><span>'+formatTime(s.time)+'s</span></div>'
+    ).join("");
+  }
+
+  function escapeHTML(s){
+    return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  }
+
+  function onError(err){
+    const msg=err.code===1?"Akses lokasi ditolak. Benarkan Location untuk Safari/Chrome."
+      :err.code===2?"Lokasi tidak dapat ditentukan. Cuba kawasan terbuka."
+      :"GPS mengambil masa terlalu lama. Cuba lagi.";
+    setStatus("❌ "+msg,"error");
+    stopWatch();
+    startBtn.disabled=false;
+  }
+
+  startBtn.addEventListener("click",startGame);
+  newBtn.addEventListener("click",startGame);
+  stopBtn.addEventListener("click",()=>{
+    stopWatch(); startBtn.disabled=false; newBtn.disabled=false;
+    setStatus("⏹ GPS dihentikan. Tekan Mula Permainan untuk mencuba semula.","warn");
+  });
+
+  nameForm.addEventListener("submit",e=>{
+    e.preventDefault();
+    if(completedTime==null) return;
+    saveScore(playerName.value,completedTime,gameWord);
+    nameArea.style.display="none";
+    setStatus("🏆 Rekod disimpan. Masa <b>"+formatTime(completedTime)+" saat</b> untuk perkataan <b>"+gameWord+"</b>.","good");
+  });
+
+  renderScores();
+})();
 </script>
 </body>
 </html>
